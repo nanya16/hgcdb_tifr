@@ -1,0 +1,84 @@
+1. SQL codes to create tables
+CREATE TABLE User_details(
+  user_ID INT NOT NULL,
+  record_ID INT,
+  org_ID INT,
+  user_firstname VARCHAR(255),
+  user_lastname VARCHAR(255),
+  PRIMARY KEY(user_ID)
+);
+
+CREATE TABLE Organization_details(
+  org_ID INT NOT NULL,
+  record_ID INT,
+  location_ID INT,
+  org_type VARCHAR(255),
+  org_name VARCHAR(255),
+  PRIMARY KEY(org_ID)
+);
+
+CREATE TABLE Record_details(
+  record_ID INT NOT NULL,
+  is_record_deleted INT,
+  record_dt DATETIME(6),
+  comment_description VARCHAR(255),
+  PRIMARY KEY(record_ID)
+);
+
+CREATE TABLE Location_details(
+  location_ID INT NOT NULL,
+  record_ID INT,
+  location_address VARCHAR(255),
+  PRIMARY KEY(location_ID)
+);
+CREATE TABLE Location_history(
+  location_history_ID INT NOT NULL,
+  record_ID INT,
+  location_ID INT,
+  new_location_ID INT,
+  PRIMARY KEY(location_history_ID)
+);
+
+CREATE TABLE Part_details(
+  part_ID INT NOT NULL,
+  record_ID INT,
+  location_ID INT,
+  org_ID INT,
+  part_type VARCHAR(255),
+  PRIMARY KEY(part_ID)
+);
+
+CREATE TABLE Module_details(
+  part_ID INT NOT NULL,
+  record_ID INT,
+  location_ID INT,
+  module_ID INT,
+  PRIMARY KEY(module_ID)
+  );
+
+2. SQL codes for establishing connections between the tables
+
+ALTER TABLE Location_details ADD CONSTRAINT fk_location_record_id FOREIGN KEY (record_ID) REFERENCES Record_details (record_ID);
+
+ALTER TABLE Location_history ADD CONSTRAINT fk_history_record_id FOREIGN KEY (record_ID) REFERENCES Record_details (record_ID);
+ALTER TABLE Location_history ADD CONSTRAINT fk_history_location_id FOREIGN KEY (location_ID) REFERENCES Location_details (location_ID);
+ALTER TABLE Location_history ADD CONSTRAINT fk_history_new_location_id FOREIGN KEY (new_location_ID) REFERENCES Location_details (location_ID);
+
+ALTER TABLE Module_details ADD CONSTRAINT fk_module_part_id FOREIGN KEY (part_ID) REFERENCES Part_details (part_ID);
+ALTER TABLE Module_details ADD CONSTRAINT fk_module_location_id FOREIGN KEY (location_ID) REFERENCES Location_details (location_ID);
+ALTER TABLE Module_details ADD CONSTRAINT fk_module_record_id FOREIGN KEY (part_ID) REFERENCES Record_details (record_ID);
+
+ALTER TABLE Organization_details ADD CONSTRAINT fk_org_record1_id FOREIGN KEY (record_ID) REFERENCES Record_details (record_ID);
+ALTER TABLE Organization_details ADD CONSTRAINT fk_org_location1_id FOREIGN KEY (location_ID) REFERENCES Location_details (location_ID);
+
+ALTER TABLE Part_details ADD CONSTRAINT fk_part_record_id FOREIGN KEY (record_ID) REFERENCES Record_details (record_ID);
+ALTER TABLE Part_details ADD CONSTRAINT fk_part_location_id FOREIGN KEY (location_ID) REFERENCES Location_details (location_ID);
+ALTER TABLE Part_details ADD CONSTRAINT fk_part_org_id FOREIGN KEY (org_ID) REFERENCES Organization_details (org_ID);
+
+ALTER TABLE Record_details ADD CONSTRAINT fk_record_location_id FOREIGN KEY (location_ID) REFERENCES Location_details (location_ID);
+
+
+ALTER TABLE User_details ADD CONSTRAINT fk_user_record1_id FOREIGN KEY (record_ID) REFERENCES Record_details (record_ID);
+ALTER TABLE User_details ADD CONSTRAINT fk_user_org1_id FOREIGN KEY (org_ID) REFERENCES Organization_details (org_ID);
+
+
